@@ -1,0 +1,33 @@
+#ZY-M100 Tuya Human Presence Sensor
+alias: Bathroom presence
+description: Control light based on presence
+trigger:
+  - type: present
+    platform: device
+    device_id: <device_id>
+    entity_id: binary_sensor.presence_bt_sensor_presence
+    domain: binary_sensor
+condition:
+  - type: is_illuminance
+    condition: device
+    device_id: <device_id>
+    entity_id: sensor.presence_bt_sensor_illuminance_lux
+    domain: sensor
+    below: 20
+action:
+  - type: turn_on
+    device_id: <device_id>
+    entity_id: light.light_br_ceilinglight
+    domain: light
+  - wait_for_trigger:
+      - type: not_present
+        platform: device
+        device_id: <device_id>
+        entity_id: binary_sensor.presence_bt_sensor_presence
+        domain: binary_sensor
+    continue_on_timeout: true
+  - type: turn_off
+    device_id: <device_id>
+    entity_id: light.light_br_ceilinglight
+    domain: light
+mode: single
